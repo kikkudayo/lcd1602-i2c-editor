@@ -1,14 +1,6 @@
-import { useState } from 'react';
-
-export default function LCDGrid({ cells, selectedCell, onCellSelect, onCellChange }) {
+export default function LCDGrid({ cells, selectedCell, onCellSelect }) {
   const rows = 2;
   const cols = 16;
-
-  const handleCellChange = (row, col, value) => {
-    const newCells = [...cells];
-    newCells[row][col] = value;
-    onCellChange(newCells);
-  };
 
   return (
     <div className="bg-green-900 p-4 rounded-lg shadow-xl inline-block">

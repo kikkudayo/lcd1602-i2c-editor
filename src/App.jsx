@@ -47,7 +47,6 @@ function App() {
                 cells={cells}
                 selectedCell={selectedCell}
                 onCellSelect={setSelectedCell}
-                onCellChange={setCells}
               />
             </div>
             
