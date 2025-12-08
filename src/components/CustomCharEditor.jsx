@@ -15,6 +15,10 @@ export default function CustomCharEditor({ editingChar, usedSlots, onSave, onCan
       setSlot(editingChar.slot);
       setPixels(editingChar.pixels);
     } else {
+      // Reset state for new character
+      setName('');
+      setSymbol('');
+      setPixels(Array(5).fill().map(() => Array(8).fill(false)));
       // Find first available slot
       const availableSlot = [0, 1, 2, 3, 4, 5, 6, 7].find(s => !usedSlots.includes(s));
       setSlot(availableSlot !== undefined ? availableSlot : 0);
