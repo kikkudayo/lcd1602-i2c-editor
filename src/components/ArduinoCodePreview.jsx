@@ -3,15 +3,66 @@ import { useState } from 'react';
 export default function ArduinoCodePreview({ cells, customChars }) {
   const [copied, setCopied] = useState(false);
 
+  const escapeForArduinoString = (value) => value
+    .replace(/\\/g, '\\\\')
+    .replace(/"/g, '\\"');
+
+  const getDisplayCommands = (indent = '') => {
+    const symbolToSlot = new Map(customChars.map((char) => [char.symbol, char.slot]));
+    const commands = [];
+
+    cells.forEach((rowCells, rowIndex) => {
+      let textStart = null;
+      let textBuffer = '';
+
+      const flushText = () => {
+        if (textStart === null) {
+          return;
+        }
+
+        commands.push(`${indent}lcd.setCursor(${textStart}, ${rowIndex});`);
+        commands.push(`${indent}lcd.print("${escapeForArduinoString(textBuffer)}");`);
+        textStart = null;
+        textBuffer = '';
+      };
+
+      rowCells.forEach((cellValue, colIndex) => {
+        if (!cellValue) {
+          flushText();
+          return;
+        }
+
+        const slot = symbolToSlot.get(cellValue);
+        if (slot !== undefined) {
+          flushText();
+          commands.push(`${indent}lcd.setCursor(${colIndex}, ${rowIndex});`);
+          commands.push(`${indent}lcd.write(byte(${slot}));`);
+          return;
+        }
+
+        if (textStart === null) {
+          textStart = colIndex;
+        }
+        textBuffer += cellValue;
+      });
+
+      flushText();
+    });
+
+    return commands;
+  };
+
   const generateArduinoCode = () => {
     let code = '';
     
+
     // Generate custom character definitions
     if (customChars.length > 0) {
       code += '// Custom character definitions\n';
       customChars.forEach(char => {
         code += `byte ${char.name.replace(/\s+/g, '_')}[] = {\n`;
         
+
         // Convert 5x8 pixel array to 8 bytes
         for (let row = 0; row < 8; row++) {
           let byte = 0;
@@ -26,21 +77,19 @@ export default function ArduinoCodePreview({ cells, customChars }) {
       });
     }
 
-    // Generate display text
-    const row1 = cells[0].join('');
-    const row2 = cells[1].join('');
+const displayCommands = getDisplayCommands();
+if (displayCommands.length > 0) {
+  code += '// LCD display content\n';
+  code += `${displayCommands.join('\n')}\n`;
+} else {
+  code += '// No characters placed on the LCD grid\n';
+}
 
-    code += '// LCD display content\n';
-    code += `lcd.setCursor(0, 0);\n`;
-    code += `lcd.print("${row1}");\n`;
-    code += `lcd.setCursor(0, 1);\n`;
-    code += `lcd.print("${row2}");\n`;
+return code;
+};
 
-    return code;
-  };
-
-  const generateFullSketch = () => {
-    let sketch = `#include <Wire.h>
+const generateFullSketch = () => {
+let sketch = `#include <Wire.h>
 #include <LiquidCrystal_I2C.h>
 
 // Set the LCD address to 0x27 for a 16 chars and 2 line display
@@ -48,12 +97,11 @@ LiquidCrystal_I2C lcd(0x27, 16, 2);
 
 `;
 
-    // Add custom character definitions
-    if (customChars.length > 0) {
-      sketch += '// Custom character definitions\n';
-      customChars.forEach(char => {
-        sketch += `byte ${char.name.replace(/\s+/g, '_')}[] = {\n`;
-        
+// Add custom character definitions
+if (customChars.length > 0) {
+  sketch += '// Custom character definitions\n';
+  customChars.forEach(char => {
+    sketch += `byte ${char.name.replace(/\s+/g, '_')}[] = {\n`;
         for (let row = 0; row < 8; row++) {
           let byte = 0;
           for (let col = 0; col < 5; col++) {
@@ -82,48 +130,37 @@ LiquidCrystal_I2C lcd(0x27, 16, 2);
       });
       sketch += '\n';
     }
+const displayCommands = getDisplayCommands('  ');
+if (displayCommands.length > 0) {
+  sketch += '  // Display text\n';
+  sketch += `${displayCommands.join('\n')}\n`;
+} else {
+  sketch += '  // No characters placed on the LCD grid\n';
+}
 
-    // Display text
-    const row1 = cells[0].join('');
-    const row2 = cells[1].join('');
-
-    sketch += `  // Display text\n`;
-    sketch += `  lcd.setCursor(0, 0);\n`;
-    sketch += `  lcd.print("${row1}");\n`;
-    sketch += `  lcd.setCursor(0, 1);\n`;
-    sketch += `  lcd.print("${row2}");\n`;
-
-    // Add note about custom characters
-    if (customChars.length > 0) {
-      sketch += '\n  // Note: To display custom characters, use:\n';
-      customChars.forEach(char => {
-        sketch += `  // lcd.write(${char.slot}); // for ${char.name}\n`;
-      });
-    }
-
-    sketch += `}
+sketch += `}
 
 void loop() {
-  // Your code here
+// Your code here
 }
 `;
 
-    return sketch;
-  };
+return sketch;
+};
 
-  const handleCopy = () => {
-    navigator.clipboard.writeText(generateArduinoCode());
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
-  };
+const handleCopy = () => {
+navigator.clipboard.writeText(generateArduinoCode());
+setCopied(true);
+setTimeout(() => setCopied(false), 2000);
+};
 
-  const handleExport = () => {
-    const sketch = generateFullSketch();
-    const blob = new Blob([sketch], { type: 'text/plain' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'lcd_sketch.ino';
+const handleExport = () => {
+const sketch = generateFullSketch();
+const blob = new Blob([sketch], { type: 'text/plain' });
+const url = URL.createObjectURL(blob);
+const a = document.createElement('a');
+a.href = url;
+a.download = 'lcd_sketch.ino';
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
