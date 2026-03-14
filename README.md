@@ -1,14 +1,14 @@
 # LCD 16x2 I2C Editor
 
-A web-based visual editor for designing LCD 16x2 I2C displays and generating Arduino code. Built with React and Tailwind CSS.
+A web-based visual editor for designing LCD 16x2 I2C displays and generating Arduino code. Built with React and Tailwind CSS using Codex.
 
 ## Features
 
-- 🖥️ **Interactive 16x2 LCD Grid** - Click any cell to edit its content
-- ✏️ **Cell Editor** - Enter text directly or create custom 5x8 pixel characters
-- 🎨 **Custom Character Creator** - Design up to 8 custom characters with a visual pixel editor
-- 📝 **Real-time Code Generation** - Arduino code updates as you edit
-- 💾 **Export Functionality** - Download complete .ino sketch files ready for Arduino
+- **Interactive 16x2 LCD Grid** - Click any cell to edit its content
+- **Cell Editor** - Enter text directly or create custom 5x8 pixel characters
+- **Custom Character Creator** - Design up to 8 custom characters with a visual pixel editor
+- **Real-time Code Generation** - Arduino code updates as you edit
+- **Export Functionality** - Download complete .ino sketch files ready for Arduino
 
 ## Getting Started
 
@@ -48,26 +48,6 @@ The generated code uses the LiquidCrystal_I2C library. Install it via Arduino Li
 ```
 Sketch → Include Library → Manage Libraries → Search for "LiquidCrystal I2C"
 ```
-
-## Project Structure
-
-```
-src/
-├── components/
-│   ├── LCDGrid.jsx           # 16x2 LCD display grid
-│   ├── CellEditor.jsx        # Cell content editor panel
-│   ├── CustomCharEditor.jsx  # Custom character creator modal
-│   └── ArduinoCodePreview.jsx # Code generation and export
-├── App.jsx                    # Main application component
-└── index.css                  # Tailwind CSS imports
-```
-
-## Technologies
-
-- **React 18** - UI framework
-- **Vite** - Build tool and dev server
-- **Tailwind CSS** - Styling
-- **LiquidCrystal_I2C** - Arduino library for LCD control
 
 ## License
 
