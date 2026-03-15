@@ -10,25 +10,6 @@ A web-based visual editor for designing LCD 16x2 I2C displays and generating Ard
 - **Real-time Code Generation** - Arduino code updates as you edit
 - **Export Functionality** - Download complete .ino sketch files ready for Arduino
 
-## Getting Started
-
-### Prerequisites
-
-- Node.js 18+ and npm
-
-### Installation
-
-```bash
-# Install dependencies
-npm install
-
-# Start development server
-npm run dev
-
-# Build for production
-npm run build
-```
-
 ## Usage
 
 1. **Design Your Display**: Click on any cell in the 16x2 grid to select it
