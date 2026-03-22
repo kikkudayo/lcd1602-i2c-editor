@@ -15,8 +15,8 @@ export default function LCDGrid({ cells, selectedCell, onCellSelect }) {
                 <div
                   key={colIndex}
                   onClick={() => onCellSelect({ row: rowIndex, col: colIndex })}
-                  className={`w-8 h-10 bg-green-500 flex items-center justify-center cursor-pointer font-mono text-lg border-2 transition-all ${
-                    isSelected ? 'border-yellow-400 ring-2 ring-yellow-300' : 'border-green-600'
+                  className={`w-8 h-10 bg-green-500 flex items-center justify-center cursor-pointer font-mono text-lg border-2 transition-all  ${
+                    isSelected ? 'border-yellow-400 ring-2 ring-yellow-300' : 'border-green-600 hover:border-gray-400 hover:ring-gray-300 hover:ring-2 ' 
                   } ${cellValue ? 'text-black' : 'text-green-600'}`}
                   title={`Row ${rowIndex + 1}, Col ${colIndex + 1}`}
                 >

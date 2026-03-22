@@ -9,7 +9,7 @@ function App() {
     Array(16).fill(''),
     Array(16).fill('')
   ]);
-  
+
   const [selectedCell, setSelectedCell] = useState(null);
   const [customChars, setCustomChars] = useState([]);
 
@@ -22,18 +22,18 @@ function App() {
   };
 
   const handleCustomCharUpdate = (charData) => {
-    setCustomChars(customChars.map(char => 
+    setCustomChars(customChars.map(char =>
       char.slot === charData.slot ? charData : char
     ));
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-8">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-8 ">
       <div className="max-w-7xl mx-auto">
         <header className="mb-8 text-center">
-          <h1 className="text-4xl font-bold text-gray-800 mb-2">
+          <a className="text-4xl font-bold text-gray-800 mb-2 underline hover:opacity-70" href='https://github.com/kikkudayo/lcd1602-i2c-editor'>
             LCD 16x2 I2C Editor
-          </h1>
+          </a>
           <p className="text-gray-600">
             Design your LCD layout and generate Arduino code
           </p>
@@ -49,7 +49,7 @@ function App() {
                 onCellSelect={setSelectedCell}
               />
             </div>
-            
+
             {/* Instructions */}
             <div className="bg-white p-4 rounded-lg shadow-md max-w-2xl">
               <h3 className="font-semibold text-gray-800 mb-2">Instructions:</h3>
@@ -84,7 +84,13 @@ function App() {
           />
         </div>
       </div>
+
+
+
+
     </div>
+
+
   )
 }
 
